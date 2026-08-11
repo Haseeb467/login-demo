@@ -1,0 +1,6 @@
+{
+  "name": "Mimosa Homes Quote Builder",
+  "description": "A multi-step home building quote calculator and configuration flow with user login/registration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
