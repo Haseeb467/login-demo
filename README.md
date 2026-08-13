@@ -1,20 +1,16 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Mimosa Homes Quote Builder
 
-# Run and deploy your AI Studio app
+A multi-step home building quote calculator for selecting regions, floorplans, facades, colour schemes and upgrades.
 
-This contains everything you need to run your app locally.
+## Run locally
 
-View your app in AI Studio: https://ai.studio/apps/a1470e6c-b60f-4ade-bb8c-5a7ad851c2a4
+```bash
+npm install
+npm run dev
+```
 
-## Run Locally
+## Build
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm run build
+```
