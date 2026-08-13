@@ -52,7 +52,15 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
                  {navigation.map(([section, children]) => {
                    const available = categories.includes(section);
                    const open = activeCategory === section || children.includes(activeCategory);
-                   return <li key={section}><button onClick={() => available && setActiveCategory(section)} className={`w-full text-left px-2 py-1.5 rounded flex items-center justify-between transition ${open ? 'bg-[#f9e6d8] text-[#1B3635] font-semibold' : 'text-slate-700 hover:bg-white'} ${!available ? 'cursor-default' : ''}`}><span>{open && <Check className="mr-1 inline h-3 w-3 text-[#F37522]" />}{section}</span>{children.length > 0 && <ChevronDown className={`h-4 w-4 transition ${open ? '' : '-rotate-90'}`} /></button>{open && children.map((child) => <button key={child} type="button" onClick={() => available && setActiveCategory(section)} className="block w-full px-7 py-1.5 text-left text-slate-600 hover:text-[#F37522]">{child}</button>)}</li>;
+                   return (
+                     <li key={section}>
+                       <button onClick={() => available && setActiveCategory(section)} className={`w-full text-left px-2 py-1.5 rounded flex items-center justify-between transition ${open ? 'bg-[#f9e6d8] text-[#1B3635] font-semibold' : 'text-slate-700 hover:bg-white'} ${!available ? 'cursor-default' : ''}`}>
+                         <span>{open && <Check className="mr-1 inline h-3 w-3 text-[#F37522]" />}{section}</span>
+                         {children.length > 0 && <ChevronDown className={`h-4 w-4 transition ${open ? '' : '-rotate-90'}`} />}
+                       </button>
+                       {open && children.map((child) => <button key={child} type="button" onClick={() => available && setActiveCategory(section)} className="block w-full px-7 py-1.5 text-left text-slate-600 hover:text-[#F37522]">{child}</button>)}
+                     </li>
+                   );
                  })}
                </ul>
              </div>
