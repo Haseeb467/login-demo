@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppState } from '../../types';
-import { Share } from 'lucide-react';
+import { FileDown, Share } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
 interface Step6FinalSummaryProps {
@@ -25,6 +25,23 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
   if (selections.externalColour) total += selections.externalColour.price;
   if (selections.internalColour) total += selections.internalColour.price;
   Object.values(selections.upgrades).forEach((u: any) => total += u.price);
+
+  const downloadPdf = () => {
+    const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character] || character));
+    const rows = [
+      ['Floorplan', selections.floorplan?.name || 'Not selected', selections.floorplan?.price || 0],
+      ['Facade', selections.facade?.name || 'Not selected', selections.facade?.price || 0],
+      ['External colours', selections.externalColour?.name || 'Not selected', selections.externalColour?.price || 0],
+      ['Internal colours', selections.internalColour?.name || 'Not selected', selections.internalColour?.price || 0],
+      ...Object.entries(selections.upgrades).map(([category, item]) => [category, item.name, item.price] as const),
+    ];
+    const printWindow = window.open('', '_blank', 'noopener,noreferrer');
+    if (!printWindow) return;
+    printWindow.document.write(`<!doctype html><html><head><title>Mimosa Homes Quote</title><style>body{font-family:Arial,sans-serif;color:#1B3635;margin:48px}h1{font-size:30px}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{padding:13px 0;border-bottom:1px solid #d8e0df;text-align:left}th:last-child,td:last-child{text-align:right}.total{margin-top:28px;text-align:right;font-size:24px;font-weight:bold}@media print{body{margin:24px}}</style></head><body><h1>Mimosa Homes — Quote Summary</h1><p>Build region: ${escapeHtml(state.region || 'Not specified')}</p><table><thead><tr><th>Category</th><th>Selection</th><th>Price</th></tr></thead><tbody>${rows.map(([category, name, value]) => `<tr><td>${escapeHtml(category)}</td><td>${escapeHtml(name)}</td><td>${value === 0 ? 'Included' : formatPrice(value)}</td></tr>`).join('')}</tbody></table><p class="total">TOTAL: ${formatPrice(total)}</p><p>This is an indicative quote only.</p></body></html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
@@ -151,6 +168,7 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
                   <button className="bg-[#1B3635] hover:bg-[#142928] text-white font-bold py-3 px-8 rounded transition-colors uppercase">
                     GET IN TOUCH
                   </button>
+                  <button type="button" onClick={downloadPdf} className="inline-flex items-center gap-2 border border-[#1B3635] bg-white px-4 py-3 text-sm font-bold text-[#1B3635] transition hover:bg-[#1B3635] hover:text-white" aria-label="Download quote as PDF"><FileDown className="h-5 w-5" /> PDF</button>
                   <button className="p-3 text-[#1B3635] border border-[#1B3635] rounded hover:bg-gray-100 transition-colors">
                     <Share className="w-5 h-5" />
                   </button>
