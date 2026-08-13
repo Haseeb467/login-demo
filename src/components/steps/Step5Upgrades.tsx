@@ -14,11 +14,6 @@ interface Step5UpgradesProps {
 
 const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNext, onBack }) => {
   const categories = Object.keys(upgrades);
-  const navigation = [
-    ['Roofing', ['Driveway']], ['Front Entry Door', ['Front Entry Door Handle']], ['Garage Door', ['Brick In Fills - Above Garage', 'Brick In Fills - Side & Rear']],
-    ['Heating & Cooling', ['Flyscreens', 'Ceiling Height']], ['Kitchen', ['Benchtop', 'Waterfall Edges']], ['Bathroom', ['Bathroom Basin', 'Tapware', 'Shower Mixer', 'Toilet']],
-    ['Ensuite', []], ['Laundry', ['Cabinetry', 'Overhead Cabinetry', 'Laundry Sink Mixer', 'Washing Machine Stops']], ['Home Security', ['Front Door Camera', 'Home Alarm System', 'Doorbell']],
-  ] as const;
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const reduceMotion = useReducedMotion();
 
@@ -49,16 +44,15 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
              <h2 className="text-xl font-bold text-gray-900 uppercase mb-4">UPGRADES</h2>
              <div className="flex-1 bg-[#f5f5f4] rounded p-2 overflow-y-auto border border-gray-100">
                <ul className="space-y-1 text-sm">
-                 {navigation.map(([section, children]) => {
-                   const available = categories.includes(section);
-                   const open = activeCategory === section || (children as readonly string[]).includes(activeCategory);
+                 {categories.map((section) => {
+                   const open = activeCategory === section;
                    return (
                      <li key={section}>
-                       <button onClick={() => available && setActiveCategory(section)} className={`w-full text-left px-2 py-1.5 rounded flex items-center justify-between transition ${open ? 'bg-[#f9e6d8] text-[#1B3635] font-semibold' : 'text-slate-700 hover:bg-white'} ${!available ? 'cursor-default' : ''}`}>
+                       <button onClick={() => setActiveCategory(section)} className={`w-full text-left px-2 py-1.5 rounded flex items-center justify-between transition ${open ? 'bg-[#f9e6d8] text-[#1B3635] font-semibold' : 'text-slate-700 hover:bg-white'}`}>
                          <span>{open && <Check className="mr-1 inline h-3 w-3 text-[#F37522]" />}{section}</span>
-                         {children.length > 0 && <ChevronDown className={`h-4 w-4 transition ${open ? '' : '-rotate-90'}`} />}
+                         <ChevronDown className={`h-4 w-4 transition ${open ? '' : '-rotate-90'}`} />
                        </button>
-                       {open && children.map((child) => <button key={child} type="button" onClick={() => available && setActiveCategory(section)} className="block w-full px-7 py-1.5 text-left text-slate-600 hover:text-[#F37522]">{child}</button>)}
+                       {open && upgrades[section].map((item) => <button key={item.id} type="button" onClick={() => handleSelectUpgrade(item)} className="block w-full px-7 py-1.5 text-left text-slate-600 hover:text-[#F37522]">{item.name}</button>)}
                      </li>
                    );
                  })}

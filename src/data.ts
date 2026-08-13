@@ -126,12 +126,19 @@ export const internalColours: Item[] = [
 
 export const upgrades: Record<string, Item[]> = {
   'Roofing': [
-    { id: 'upg-1', name: 'Concrete Roof Tiles - Elabana', price: 0, image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=80&w=200&h=200' },
-    { id: 'upg-2', name: 'Concrete Roof Tiles - Atura', price: 1400, image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=200&h=200' },
-    { id: 'upg-3', name: 'Colorbond Roof', price: 2990, image: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=80&w=200&h=200' },
+    { id: 'roof-1', name: 'Concrete Roof Tiles - Elabana', price: 0, image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=80&w=400&h=300' },
+    { id: 'roof-2', name: 'Concrete Roof Tiles - Atura', price: 1400, image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=400&h=300' },
+    { id: 'roof-3', name: 'Colorbond Roof', price: 2990, image: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=80&w=400&h=300' },
+    { id: 'roof-4', name: 'Sarked Roof Upgrade', price: 2250, image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&q=80&w=400&h=300' },
+    { id: 'roof-5', name: 'Roof Ventilation System', price: 890, image: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=400&h=300' },
   ],
-  'Front Entry Door': [
-    { id: 'upg-4', name: 'Standard Door', price: 0, image: 'https://images.unsplash.com/photo-1600566753086-00f18efc204a?auto=format&fit=crop&q=80&w=200&h=200' },
-    { id: 'upg-5', name: 'Premium Timber Door', price: 850, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=200&h=200' },
-  ]
+  'Driveway': ['Exposed Aggregate Driveway', 'Coloured Concrete Driveway', 'Plain Concrete Driveway', 'Driveway Crossover', 'Sealed Driveway Finish'].map((name, index) => ({ id: `drive-${index}`, name, price: [1850, 1420, 0, 680, 990][index], image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Front Entry Door': ['Standard Entry Door', 'Premium Timber Entry Door', 'Glazed Entry Door', 'Pivot Entry Door', 'Designer Door Handle'].map((name, index) => ({ id: `entry-${index}`, name, price: [0, 850, 1290, 2450, 390][index], image: 'https://images.unsplash.com/photo-1600566753086-00f18efc204a?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Garage Door': ['Painted Infill Above Garage', 'Panel Lift Garage Door', 'Timber Look Garage Door', 'Garage Door Motor', 'Remote Control Package'].map((name, index) => ({ id: `garage-${index}`, name, price: [0, 1060, 2025, 650, 280][index], image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Heating & Cooling': ['Ducted Heating', 'Split System Cooling', 'Evaporative Cooling', 'Ceiling Fans', 'Double Glazing Upgrade'].map((name, index) => ({ id: `climate-${index}`, name, price: [0, 1750, 3890, 690, 5200][index], image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Kitchen': ['Stone Benchtop', 'Waterfall Edge', '900mm Appliance Package', 'Soft Close Drawers', 'Walk-in Pantry Fitout'].map((name, index) => ({ id: `kitchen-${index}`, name, price: [1850, 980, 3390, 740, 2100][index], image: 'https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Bathroom': ['Freestanding Bath', 'Frameless Shower Screen', 'Tiled Shower Niche', 'Designer Tapware', 'Wall Hung Vanity'].map((name, index) => ({ id: `bath-${index}`, name, price: [1650, 890, 420, 760, 1150][index], image: 'https://images.unsplash.com/photo-1600566753086-00f18efc204a?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Ensuite': ['Double Vanity', 'Large Format Tiles', 'Rainfall Shower', 'Heated Towel Rail', 'Premium Ensuite Package'].map((name, index) => ({ id: `ensuite-${index}`, name, price: [1280, 940, 560, 480, 2790][index], image: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Laundry': ['Overhead Cabinetry', 'Laundry Sink Mixer', 'Washing Machine Stops', 'Tall Broom Cabinet', 'Laundry Benchtop'].map((name, index) => ({ id: `laundry-${index}`, name, price: [790, 190, 260, 520, 680][index], image: 'https://images.unsplash.com/photo-1586208958839-06c17cacdf08?auto=format&fit=crop&q=80&w=400&h=300' })),
+  'Home Security': ['Front Door Camera', 'Home Alarm System', 'Video Doorbell', 'Smart Lock', 'Security Sensor Package'].map((name, index) => ({ id: `security-${index}`, name, price: [1100, 1890, 420, 690, 980][index], image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=400&h=300' })),
 };
