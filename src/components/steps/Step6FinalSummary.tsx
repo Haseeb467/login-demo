@@ -33,7 +33,7 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
       ['Facade', selections.facade?.name || 'Not selected', selections.facade?.price || 0],
       ['External colours', selections.externalColour?.name || 'Not selected', selections.externalColour?.price || 0],
       ['Internal colours', selections.internalColour?.name || 'Not selected', selections.internalColour?.price || 0],
-      ...Object.entries(selections.upgrades).map(([category, item]) => [category, item.name, item.price] as const),
+      ...(Object.entries(selections.upgrades) as [string, { name: string; price: number }][]).map(([category, item]) => [category, item.name, item.price] as const),
     ];
     const printWindow = window.open('', '_blank', 'noopener,noreferrer');
     if (!printWindow) return;
