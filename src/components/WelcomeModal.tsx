@@ -4,7 +4,7 @@ interface WelcomeModalProps {
   onSelectRegion: (region: string) => void;
 }
 
-const RegionMarker = ({ top, left, label, onClick }: { top: string, left: string, label: string, onClick: () => void }) => (
+const RegionMarker = ({ top, left, label, onClick }: { key?: React.Key; top: string, left: string, label: string, onClick: () => void }) => (
   <button 
     onClick={onClick} 
     className="absolute transform -translate-x-1/2 -translate-y-full flex flex-col items-center group z-10"
@@ -19,18 +19,26 @@ const RegionMarker = ({ top, left, label, onClick }: { top: string, left: string
   </button>
 );
 
+const regions = [
+  { label: 'North', points: '55,8 74,10 77,26 70,34 56,31 51,20', marker: ['21%', '62%'] },
+  { label: 'North West', points: '31,15 52,20 56,31 47,45 27,42 23,29', marker: ['30%', '40%'] },
+  { label: 'West', points: '21,42 47,45 44,60 29,72 16,65 14,51', marker: ['60%', '35%'] },
+  { label: 'Geelong', points: '12,65 29,72 30,87 14,92 4,84 6,73', marker: ['84%', '18%'] },
+  { label: 'South East', points: '63,55 86,62 96,77 93,89 73,86 67,72 56,67', marker: ['77%', '81%'] },
+] as const;
+
 const WelcomeModal: React.FC<WelcomeModalProps> = ({ onSelectRegion }) => {
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 max-w-5xl w-full flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in duration-300 h-[600px]">
+      <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-gray-100 max-w-5xl w-full flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in duration-300 h-[min(560px,calc(100svh-48px))] min-h-[430px]">
         
         {/* Left Side - Text Content */}
-        <div className="w-full md:w-[45%] p-12 flex flex-col items-center justify-center text-center bg-white z-20 shadow-xl">
-          <h1 className="text-5xl font-light text-[#1B3635] mb-6 tracking-wide">WELCOME</h1>
-          <p className="text-gray-600 leading-relaxed mb-8 text-lg">
+        <div className="w-full md:w-[45%] px-8 py-7 md:px-11 md:py-9 flex flex-col items-center justify-center text-center bg-white z-20 shadow-xl">
+          <h1 className="text-4xl md:text-5xl font-light text-[#1B3635] mb-4 tracking-wide">WELCOME</h1>
+          <p className="text-gray-600 leading-relaxed mb-6 text-base md:text-lg">
             Start building your dream home with Mimosa Homes today. Explore our V-Collection and customize your house to suit your needs. Create a personalized quote and let us help you bring your dream home to life.
           </p>
-          <p className="text-[#1B3635] font-semibold text-lg">
+          <p className="text-[#1B3635] font-semibold text-base md:text-lg">
             Begin by choosing your preferred build region
           </p>
         </div>
@@ -51,16 +59,36 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onSelectRegion }) => {
             className="absolute inset-0 pointer-events-none"
           ></iframe>
           
-          {/* Teal Tint Overlay to match the Professional Polish theme */}
+          {/* Teal tint preserves the application's existing colour palette. */}
           <div className="absolute inset-0 bg-[#1B3635]/20 mix-blend-color pointer-events-none"></div>
 
-          {/* Overlaid region buttons styled as map pins based on precise relative geographic coordinates */}
+          {/* Clickable build-area boundaries. The fill is deliberately subtle so the map remains readable. */}
           <div className="absolute inset-0">
-            <RegionMarker top="22%" left="61%" label="North" onClick={() => onSelectRegion('North')} />
-            <RegionMarker top="27%" left="40%" label="North West" onClick={() => onSelectRegion('North West')} />
-            <RegionMarker top="54%" left="36%" label="West" onClick={() => onSelectRegion('West')} />
-            <RegionMarker top="80%" left="18%" label="Geelong" onClick={() => onSelectRegion('Geelong')} />
-            <RegionMarker top="75%" left="80%" label="South East" onClick={() => onSelectRegion('South East')} />
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-label="Choose a build region">
+              {regions.map((region) => (
+                <polygon
+                  key={region.label}
+                  points={region.points}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Select ${region.label} region`}
+                  onClick={() => onSelectRegion(region.label)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') onSelectRegion(region.label);
+                  }}
+                  className="cursor-pointer fill-[#1B3635]/25 stroke-[#C5A267] stroke-[0.45] transition-all duration-200 hover:fill-[#C5A267]/45 hover:stroke-white focus:outline-none"
+                />
+              ))}
+            </svg>
+            {regions.map((region) => (
+              <RegionMarker
+                key={region.label}
+                top={region.marker[0]}
+                left={region.marker[1]}
+                label={region.label}
+                onClick={() => onSelectRegion(region.label)}
+              />
+            ))}
           </div>
         </div>
 
