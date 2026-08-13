@@ -3,6 +3,7 @@ import { AppState, Item } from '../../types';
 import { QuoteSummary } from '../QuoteSummary';
 import { externalColours, internalColours } from '../../data';
 import { Search, ChevronRight } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 interface Step4ColoursProps {
   state: AppState;
@@ -14,6 +15,7 @@ interface Step4ColoursProps {
 const Step4Colours: React.FC<Step4ColoursProps> = ({ state, updateState, onNext, onBack }) => {
   // We'll use a local state to toggle between external and internal colour selection phases within step 4
   const [phase, setPhase] = useState<'external' | 'internal'>('external');
+  const reduceMotion = useReducedMotion();
 
   const handleSelect = (item: Item, type: 'external' | 'internal') => {
     if (type === 'external') {
@@ -46,14 +48,17 @@ const Step4Colours: React.FC<Step4ColoursProps> = ({ state, updateState, onNext,
             {phase === 'external' ? 'EXTERNAL COLOURS SCHEMES' : 'INTERNAL COLOURS SCHEMES'}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mb-7 flex items-center gap-2 rounded-xl bg-[#f5f7f6] p-2" role="tablist" aria-label="Colour scheme type">
+            {(['external', 'internal'] as const).map((value) => <button key={value} type="button" role="tab" aria-selected={phase === value} onClick={() => setPhase(value)} className={`flex-1 rounded-lg px-4 py-3 text-sm font-bold capitalize transition ${phase === value ? 'bg-[#1B3635] text-white shadow-sm' : 'text-slate-500 hover:text-[#1B3635]'}`}>{value} colours</button>)}
+          </div>
+          <AnimatePresence mode="wait" initial={false}><motion.div key={phase} initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: 0, y: -8 }} transition={{ duration: .24 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentOptions.map((item) => {
               const isSelected = currentSelection?.id === item.id;
               return (
                 <div 
                   key={item.id} 
                   onClick={() => handleSelect(item, phase)}
-                  className={`border rounded-lg overflow-hidden cursor-pointer transition-all ${isSelected ? 'border-[#1B3635] ring-2 ring-[#1B3635]' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`border rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg ${isSelected ? 'border-[#1B3635] ring-2 ring-[#1B3635]' : 'border-gray-200 hover:border-[#C5A267]'}`}
                 >
                   <div className="relative h-40 bg-gray-100">
                     {item.image && <img src={item.image} alt={item.name} className="w-full h-full object-cover" />}
@@ -70,7 +75,7 @@ const Step4Colours: React.FC<Step4ColoursProps> = ({ state, updateState, onNext,
                 </div>
               );
             })}
-          </div>
+          </motion.div></AnimatePresence>
 
           <div className="mt-8 text-center px-4">
              <p className="text-xs text-gray-400">

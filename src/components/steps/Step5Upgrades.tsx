@@ -3,6 +3,7 @@ import { AppState, Item } from '../../types';
 import { QuoteSummary } from '../QuoteSummary';
 import { upgrades } from '../../data';
 import { ChevronRight, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 interface Step5UpgradesProps {
   state: AppState;
@@ -14,6 +15,7 @@ interface Step5UpgradesProps {
 const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNext, onBack }) => {
   const categories = Object.keys(upgrades);
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
+  const reduceMotion = useReducedMotion();
 
   const handleSelectUpgrade = (upgrade: Item) => {
     // Only one upgrade per category for this simple logic
@@ -46,7 +48,7 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
                    <li key={cat}>
                      <button 
                        onClick={() => setActiveCategory(cat)}
-                       className={`w-full text-left px-3 py-2 rounded text-sm transition-colors flex justify-between items-center ${activeCategory === cat ? 'bg-gray-200 font-bold text-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}
+                       className={`w-full text-left px-3 py-3 rounded-lg text-sm transition-colors flex justify-between items-center ${activeCategory === cat ? 'bg-[#1B3635] font-bold text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`}
                      >
                        {cat}
                        <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -68,7 +70,7 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
 
           {/* Main Content */}
           <div className="flex-1 pt-10">
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+             <AnimatePresence mode="wait" initial={false}><motion.div key={activeCategory} initial={reduceMotion ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: 0, y: -8 }} transition={{ duration: .22 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                {upgrades[activeCategory]?.map((item) => {
                   const isSelected = state.selections.upgrades[activeCategory]?.id === item.id;
                   
@@ -76,7 +78,7 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
                     <div 
                       key={item.id} 
                       onClick={() => handleSelectUpgrade(item)}
-                      className={`border rounded-lg overflow-hidden cursor-pointer transition-all flex flex-col h-[280px] ${isSelected ? 'border-[#1B3635] ring-2 ring-[#1B3635]' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`border rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg flex flex-col h-[280px] ${isSelected ? 'border-[#1B3635] ring-2 ring-[#1B3635]' : 'border-gray-200 hover:border-[#C5A267]'}`}
                     >
                       <div className="relative flex-1 bg-white flex items-center justify-center p-4">
                         <img src={item.image} alt={item.name} className="max-w-full max-h-full object-contain" />
@@ -92,7 +94,7 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
                     </div>
                   );
                })}
-             </div>
+             </motion.div></AnimatePresence>
           </div>
 
           <div className="absolute bottom-6 left-6 text-xs text-gray-500">

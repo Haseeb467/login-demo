@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppState } from '../../types';
 import { Share } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 
 interface Step6FinalSummaryProps {
   state: AppState;
@@ -8,6 +9,7 @@ interface Step6FinalSummaryProps {
 
 const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
   const { selections, landDetails } = state;
+  const reduceMotion = useReducedMotion();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-AU', {
@@ -26,11 +28,11 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
-      <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-8 flex flex-col md:flex-row gap-8 min-h-[700px]">
+      <motion.div initial={reduceMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .32 }} className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-8 flex flex-col md:flex-row gap-8 min-h-[700px]">
         
         {/* Text Summary */}
         <div className="w-full md:w-[350px] flex flex-col">
-           <h2 className="text-xl font-bold text-gray-900 uppercase mb-8">QUOTE SUMMARY</h2>
+           <p className="mb-1 text-xs font-semibold uppercase tracking-[.16em] text-[#C5A267]">Step 6 of 6</p><h2 className="text-3xl font-bold text-gray-900 uppercase mb-8">QUOTE SUMMARY</h2>
            
            <div className="space-y-6 text-sm flex-1">
              <div>
@@ -141,7 +143,7 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
                The smaller facade is indicative only and is there to represent the external colours chosen. Refer to your official Mimosa Homes preliminary agreement for full and accurate pricing, promotions and terms and conditions. This is not an official quote.
              </p>
 
-             <div className="mt-6 bg-white border border-[#1B3635] rounded-lg p-4 flex items-center justify-between shadow-sm">
+             <div className="mt-6 bg-[#f5f7f6] border border-[#1B3635]/20 rounded-xl p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shadow-sm">
                 <div className="text-gray-800 text-sm">
                   Connect now to secure your Site Costs <br/> <span className="font-bold">&amp; finalise your new quote!</span>
                 </div>
@@ -156,7 +158,7 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
              </div>
            </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
