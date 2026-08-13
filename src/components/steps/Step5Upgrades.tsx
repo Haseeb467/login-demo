@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppState, Item } from '../../types';
 import { QuoteSummary } from '../QuoteSummary';
 import { upgrades } from '../../data';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, Info, Check } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 interface Step5UpgradesProps {
@@ -14,6 +14,11 @@ interface Step5UpgradesProps {
 
 const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNext, onBack }) => {
   const categories = Object.keys(upgrades);
+  const navigation = [
+    ['Roofing', ['Driveway']], ['Front Entry Door', ['Front Entry Door Handle']], ['Garage Door', ['Brick In Fills - Above Garage', 'Brick In Fills - Side & Rear']],
+    ['Heating & Cooling', ['Flyscreens', 'Ceiling Height']], ['Kitchen', ['Benchtop', 'Waterfall Edges']], ['Bathroom', ['Bathroom Basin', 'Tapware', 'Shower Mixer', 'Toilet']],
+    ['Ensuite', []], ['Laundry', ['Cabinetry', 'Overhead Cabinetry', 'Laundry Sink Mixer', 'Washing Machine Stops']], ['Home Security', ['Front Door Camera', 'Home Alarm System', 'Doorbell']],
+  ] as const;
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const reduceMotion = useReducedMotion();
 
@@ -42,28 +47,13 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
           {/* Sidebar */}
           <div className="w-64 flex flex-col h-[500px]">
              <h2 className="text-xl font-bold text-gray-900 uppercase mb-4">UPGRADES</h2>
-             <div className="flex-1 bg-gray-50 rounded p-2 overflow-y-auto border border-gray-100">
-               <ul className="space-y-1">
-                 {categories.map((cat) => (
-                   <li key={cat}>
-                     <button 
-                       onClick={() => setActiveCategory(cat)}
-                       className={`w-full text-left px-3 py-3 rounded-lg text-sm transition-colors flex justify-between items-center ${activeCategory === cat ? 'bg-[#1B3635] font-bold text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`}
-                     >
-                       {cat}
-                       <ChevronDown className="w-4 h-4 text-gray-400" />
-                     </button>
-                   </li>
-                 ))}
-                 {/* Dummy categories to match visual */}
-                 {['Garage Door', 'Brick In Fills', 'Heating & Cooling', 'Kitchen', 'Bathroom', 'Ensuite', 'Laundry'].map(cat => (
-                    <li key={cat}>
-                      <button className="w-full text-left px-3 py-2 rounded text-sm text-gray-600 hover:bg-gray-100 flex justify-between items-center">
-                        {cat}
-                        <ChevronDown className="w-4 h-4 text-gray-400" />
-                      </button>
-                    </li>
-                 ))}
+             <div className="flex-1 bg-[#f5f5f4] rounded p-2 overflow-y-auto border border-gray-100">
+               <ul className="space-y-1 text-sm">
+                 {navigation.map(([section, children]) => {
+                   const available = categories.includes(section);
+                   const open = activeCategory === section || children.includes(activeCategory);
+                   return <li key={section}><button onClick={() => available && setActiveCategory(section)} className={`w-full text-left px-2 py-1.5 rounded flex items-center justify-between transition ${open ? 'bg-[#f9e6d8] text-[#1B3635] font-semibold' : 'text-slate-700 hover:bg-white'} ${!available ? 'cursor-default' : ''}`}><span>{open && <Check className="mr-1 inline h-3 w-3 text-[#F37522]" />}{section}</span>{children.length > 0 && <ChevronDown className={`h-4 w-4 transition ${open ? '' : '-rotate-90'}`} /></button>{open && children.map((child) => <button key={child} type="button" onClick={() => available && setActiveCategory(section)} className="block w-full px-7 py-1.5 text-left text-slate-600 hover:text-[#F37522]">{child}</button>)}</li>;
+                 })}
                </ul>
              </div>
           </div>
@@ -83,12 +73,11 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
                       <div className="relative flex-1 bg-white flex items-center justify-center p-4">
                         <img src={item.image} alt={item.name} className="max-w-full max-h-full object-contain" />
                       </div>
-                      <div className={`p-3 flex justify-between items-center text-xs font-bold text-white transition-colors ${isSelected ? 'bg-[#1B3635]' : 'bg-white text-gray-600 border-t border-gray-100'}`}>
+                      <div className={`p-3 flex justify-between items-center text-xs font-bold transition-colors ${isSelected ? 'bg-[#F37522] text-white' : 'bg-white text-gray-700 border-t border-gray-100'}`}>
                         <span className="flex-1 pr-2 leading-snug">{item.name}</span>
                         <div className="flex items-center gap-2 whitespace-nowrap">
-                          {isSelected && <span className="w-4 h-4 bg-white text-[#1B3635] rounded-full text-center leading-4 text-[10px] font-bold block">i</span>}
-                          {!isSelected && <span className="w-4 h-4 bg-[#1B3635] text-white rounded-full text-center leading-4 text-[10px] font-bold block">i</span>}
-                          <span className={isSelected ? 'text-white' : 'text-[#1B3635]'}>{formatPrice(item.price)}</span>
+                          <Info className="h-4 w-4" />
+                          <span className={isSelected ? 'text-white' : 'text-[#F37522]'}>{formatPrice(item.price)}</span>
                         </div>
                       </div>
                     </div>
