@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { AppState, Item } from '../../types';
 import { QuoteSummary } from '../QuoteSummary';
 import { floorplans } from '../../data';
-import { Search, ChevronRight, ChevronLeft, Bed, Bath, Car, ArrowLeftRight } from 'lucide-react';
+import { ArrowLeftRight, Bath, BedDouble, CarFront, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 interface Step2FloorplanProps {
   state: AppState;
@@ -11,163 +11,107 @@ interface Step2FloorplanProps {
   onBack: () => void;
 }
 
+const formatPrice = (price: number) => new Intl.NumberFormat('en-AU', {
+  style: 'currency', currency: 'AUD', maximumFractionDigits: 0,
+}).format(price);
+
+const FloorplanPreview = ({ plan, position, onClick }: { plan: Item; position: 'previous' | 'next'; onClick: () => void }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    aria-label={`Show ${plan.name}`}
+    className={`absolute top-1/2 hidden h-[292px] w-[238px] -translate-y-1/2 overflow-hidden rounded-xl border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:border-[#1B3635] hover:shadow-lg lg:block ${position === 'previous' ? '-left-28' : '-right-28'}`}
+  >
+    <img src={plan.image} alt="" className="h-[190px] w-full object-cover opacity-70" />
+    <div className="p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#1B3635]">{plan.name}</p>
+      <p className="mt-2 text-sm font-bold text-slate-700">{formatPrice(plan.price)}</p>
+    </div>
+  </button>
+);
+
+const Detail = ({ icon: Icon, value }: { icon: typeof BedDouble; value: number | undefined }) => (
+  <div className="flex items-center gap-2 text-[#1B3635]">
+    <Icon className="h-5 w-5 stroke-[1.8]" />
+    <span className="text-xl font-semibold">{value}</span>
+  </div>
+);
+
 const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onNext, onBack }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const initialIndex = Math.max(0, floorplans.findIndex((plan) => plan.id === state.selections.floorplan?.id));
+  const [activeIndex, setActiveIndex] = useState(initialIndex);
+  const activePlan = floorplans[activeIndex];
+  const previousPlan = floorplans[(activeIndex - 1 + floorplans.length) % floorplans.length];
+  const nextPlan = floorplans[(activeIndex + 1) % floorplans.length];
+  const isSelected = state.selections.floorplan?.id === activePlan.id;
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = scrollRef.current.clientWidth * 0.8; // Scroll by about one card width
-      scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-    }
-  };
-
-  const handleSelect = (floorplan: Item) => {
-    updateState({ 
-      selections: { ...state.selections, floorplan } 
-    });
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD',
-      maximumFractionDigits: 0
-    }).format(price);
-  };
+  const selectPlan = () => updateState({ selections: { ...state.selections, floorplan: activePlan } });
+  const changePlan = (direction: -1 | 1) => setActiveIndex((index) => (index + direction + floorplans.length) % floorplans.length);
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 p-4">
-      <div className="flex-1">
-        <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-6 mb-6">
-          <div className="flex flex-wrap items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 uppercase">FLOORPLANS</h2>
-            <div className="flex flex-wrap gap-4 items-end">
-              <div>
-                <label className="block text-[10px] text-gray-500 uppercase mb-1">Width selected:</label>
-                <select className="border border-gray-300 rounded px-2 py-1 text-sm outline-none">
-                  <option>10.5</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[10px] text-gray-500 uppercase mb-1">Depth selected:</label>
-                <select className="border border-gray-300 rounded px-2 py-1 text-sm outline-none">
-                  <option>25</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[10px] text-gray-500 uppercase mb-1">Storeys selected:</label>
-                <select className="border border-gray-300 rounded px-2 py-1 text-sm outline-none">
-                  <option>Single</option>
-                </select>
-              </div>
-              <button className="bg-[#333333] text-white px-3 py-1 text-xs font-bold rounded hover:bg-black transition-colors">
-                CHANGE
-              </button>
-            </div>
+    <div className="mx-auto grid w-full max-w-7xl gap-7 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_330px]">
+      <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white px-5 py-7 shadow-[0_20px_50px_rgba(27,54,53,0.08)] sm:px-8">
+        <div className="mb-8 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#C5A267]">Step 2 of 6</p>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900">FLOORPLANS</h2>
           </div>
-
-          {/* Floorplan Cards List/Carousel */}
-          <div className="relative flex items-center mb-8">
-            <button 
-              onClick={() => scroll('left')}
-              className="absolute left-[-20px] z-10 w-10 h-10 bg-[#1B3635] rounded-full flex items-center justify-center text-white shadow hover:bg-[#142928] transition-colors"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            <div 
-              ref={scrollRef}
-              className="flex gap-4 overflow-x-auto w-full px-8 pb-4 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {floorplans.map((fp) => {
-                const isSelected = state.selections.floorplan?.id === fp.id;
-                return (
-                  <div key={fp.id} className={`min-w-[400px] snap-center flex-shrink-0 border-2 rounded-lg flex flex-col overflow-hidden transition-all ${isSelected ? 'border-[#1B3635] ring-1 ring-[#1B3635]' : 'border-gray-200 hover:border-gray-300'}`}>
-                  <div className="p-4 flex-1 flex">
-                    <div className="w-1/2 relative pr-4">
-                      <div className="absolute top-0 left-0 bg-[#1B3635] w-8 h-8 rounded-full flex items-center justify-center text-white cursor-pointer z-10">
-                        <Search className="w-4 h-4" />
-                      </div>
-                      <img src={fp.image} alt={fp.name} className="w-full h-auto object-contain mix-blend-multiply opacity-80 mt-8" />
-                      <div className="absolute bottom-0 inset-x-0 flex justify-center text-[#1B3635]">
-                         <ArrowLeftRight className="w-5 h-5" />
-                      </div>
-                    </div>
-                    <div className="w-1/2 flex flex-col items-center">
-                      <button 
-                        onClick={() => handleSelect(fp)}
-                        className={`w-full py-2 rounded text-sm font-bold uppercase mb-4 transition-colors ${isSelected ? 'bg-[#1B3635] text-white' : 'bg-[#1B3635] text-white hover:bg-[#142928]'}`}
-                      >
-                        {isSelected ? 'UNSELECT' : 'SELECT'}
-                      </button>
-                      <h3 className="text-xl font-bold uppercase text-gray-900 mb-1">{fp.name}</h3>
-                      <a href="#" className="text-[#1B3635] text-sm underline mb-2">View Floorplan</a>
-                      <button className="bg-[#1B3635] text-white text-[10px] font-bold uppercase px-3 py-1 rounded mb-6">INCLUSIONS</button>
-                      
-                      <div className="flex flex-col gap-2 mb-6 items-end w-2/3 border-b border-gray-200 pb-4">
-                        <div className="flex items-center gap-2 text-[#1B3635] font-bold text-lg"><Bed className="w-5 h-5" /> {fp.details?.beds}</div>
-                        <div className="flex items-center gap-2 text-[#1B3635] font-bold text-lg"><Bath className="w-5 h-5" /> {fp.details?.baths}</div>
-                        <div className="flex items-center gap-2 text-[#1B3635] font-bold text-lg"><Car className="w-5 h-5" /> {fp.details?.cars}</div>
-                      </div>
-
-                      <div className="text-[10px] text-gray-500 text-right w-full pr-4 space-y-1">
-                        <div>Min Frontage: <span className="text-[#1B3635] font-bold">{fp.details?.minFrontage}</span></div>
-                        <div>Min Depth: <span className="text-[#1B3635] font-bold">{fp.details?.minDepth}</span></div>
-                        <div>Total Area: <span className="text-[#1B3635] font-bold">{fp.details?.totalArea}</span></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`py-3 text-center text-white font-bold text-xl ${isSelected ? 'bg-[#1B3635]' : 'bg-gray-400'}`}>
-                    {formatPrice(fp.price)}
-                  </div>
-                </div>
-              );
-            })}
-            </div>
-
-            <button 
-              onClick={() => scroll('right')}
-              className="absolute right-[-20px] z-10 w-10 h-10 bg-[#1B3635] rounded-full flex items-center justify-center text-white shadow hover:bg-[#142928] transition-colors"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-
-          {/* Bottom Actions */}
-          <div className="flex items-center justify-center mt-12 relative">
-             <button onClick={onBack} className="absolute left-1/2 -ml-24 text-[#1B3635] hover:underline text-sm uppercase">
-               &lt; GO BACK
-             </button>
-             <button 
-               onClick={onNext}
-               disabled={!state.selections.floorplan}
-               className={`bg-[#1B3635] hover:bg-[#142928] text-white rounded-xl px-6 py-4 font-bold shadow-lg shadow-teal-900/20 flex items-center gap-2 transition-colors z-10 ${!state.selections.floorplan ? 'opacity-50 cursor-not-allowed' : ''}`}
-             >
-               NEXT STEP <ChevronRight className="w-5 h-5 text-[#1B3635]" />
-             </button>
-             {state.selections.floorplan && (
-               <div className="absolute top-[-30px] right-1/2 -mr-32 bg-[#1B3635] text-white text-xs px-3 py-1 rounded animate-pulse">
-                 To continue building your quote, please press this button
-                 <div className="absolute -bottom-1 right-12 w-2 h-2 bg-[#1B3635] rotate-45"></div>
-               </div>
-             )}
+          <div className="flex flex-wrap gap-3">
+            {['10.5m frontage', '25m depth', 'Single storey'].map((filter) => (
+              <button key={filter} type="button" className="rounded-full border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-[#1B3635] hover:text-[#1B3635]">{filter}</button>
+            ))}
+            <button type="button" className="rounded-full bg-[#1B3635] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#142928]">CHANGE</button>
           </div>
         </div>
-      </div>
-      
-      <div className="w-full lg:w-[400px]">
+
+        <div className="relative mx-auto flex max-w-4xl items-center justify-center py-3 lg:py-5">
+          <FloorplanPreview plan={previousPlan} position="previous" onClick={() => changePlan(-1)} />
+          <button type="button" onClick={() => changePlan(-1)} aria-label="Previous floorplan" className="absolute left-0 z-20 grid h-11 w-11 place-items-center rounded-full bg-[#1B3635] text-white shadow-lg transition hover:scale-105 hover:bg-[#142928]"><ChevronLeft /></button>
+
+          <article className="relative z-10 grid w-full max-w-[610px] overflow-hidden rounded-2xl border-2 border-[#C5A267] bg-white shadow-[0_20px_45px_rgba(27,54,53,0.16)] md:grid-cols-[1.08fr_0.92fr]">
+            <div className="relative min-h-[300px] bg-[#f5f7f6] p-6">
+              <button type="button" aria-label={`Preview ${activePlan.name}`} className="absolute left-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-[#1B3635] text-white shadow-md transition hover:bg-[#142928]"><Search className="h-5 w-5" /></button>
+              <img src={activePlan.image} alt={activePlan.name} className="h-full w-full object-cover" />
+              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 p-2 text-[#1B3635] shadow-sm"><ArrowLeftRight className="h-5 w-5" /></div>
+            </div>
+
+            <div className="flex flex-col p-6 text-center">
+              <button type="button" onClick={selectPlan} className="rounded-md bg-[#1B3635] py-2.5 text-sm font-bold text-white transition hover:bg-[#142928]">{isSelected ? 'SELECTED' : 'SELECT THIS PLAN'}</button>
+              <h3 className="mt-7 text-2xl font-bold uppercase tracking-tight text-slate-900">{activePlan.name}</h3>
+              <button type="button" className="mx-auto mt-2 text-sm font-medium text-[#1B3635] underline underline-offset-4">View Floorplan</button>
+              <button type="button" className="mx-auto mt-3 rounded bg-[#C5A267] px-3 py-1.5 text-[11px] font-bold text-white">INCLUSIONS</button>
+
+              <div className="my-6 flex justify-center gap-7 border-y border-slate-200 py-5">
+                <Detail icon={BedDouble} value={activePlan.details?.beds} />
+                <Detail icon={Bath} value={activePlan.details?.baths} />
+                <Detail icon={CarFront} value={activePlan.details?.cars} />
+              </div>
+              <div className="space-y-1 text-right text-xs text-slate-500">
+                <p>Min Frontage: <span className="font-semibold text-[#1B3635]">{activePlan.details?.minFrontage}</span></p>
+                <p>Min Depth: <span className="font-semibold text-[#1B3635]">{activePlan.details?.minDepth}</span></p>
+                <p>Total Area: <span className="font-semibold text-[#1B3635]">{activePlan.details?.totalArea}</span></p>
+              </div>
+            </div>
+            <div className="col-span-full bg-[#1B3635] py-3 text-center text-xl font-bold text-white">{formatPrice(activePlan.price)}</div>
+          </article>
+
+          <button type="button" onClick={() => changePlan(1)} aria-label="Next floorplan" className="absolute right-0 z-20 grid h-11 w-11 place-items-center rounded-full bg-[#1B3635] text-white shadow-lg transition hover:scale-105 hover:bg-[#142928]"><ChevronRight /></button>
+          <FloorplanPreview plan={nextPlan} position="next" onClick={() => changePlan(1)} />
+        </div>
+
+        <div className="mt-9 flex flex-col-reverse items-center justify-between gap-4 border-t border-slate-100 pt-6 sm:flex-row">
+          <button type="button" onClick={onBack} className="text-sm font-semibold text-[#1B3635] underline underline-offset-4">← GO BACK</button>
+          <button type="button" onClick={onNext} disabled={!state.selections.floorplan} className="inline-flex items-center gap-2 rounded-lg bg-[#1B3635] px-6 py-3 font-bold text-white shadow-lg transition hover:bg-[#142928] disabled:cursor-not-allowed disabled:opacity-45">NEXT STEP <ChevronRight className="h-5 w-5" /></button>
+        </div>
+      </section>
+
+      <aside className="space-y-4">
         <QuoteSummary selections={state.selections} />
-        <div className="mt-4 flex flex-col items-end gap-2 text-right">
-          <p className="text-xs text-gray-500">Already have an account? <a href="#" className="text-gray-800 underline">Sign In</a></p>
-          <button className="w-full bg-[#1B3635] hover:bg-[#142928] text-white py-4 rounded-xl font-bold shadow-lg shadow-teal-900/20 uppercase transition-colors">
-            CREATE AN ACCOUNT
-          </button>
-          <button className="bg-[#1B3635] hover:bg-[#142928] text-white text-xs px-4 py-2 rounded uppercase font-bold mt-2">
-            RESTART QUOTE
-          </button>
+        <div className="rounded-2xl border border-slate-100 bg-white p-5 text-right shadow-sm">
+          <p className="text-xs text-slate-500">Already have an account? <button type="button" className="font-semibold text-[#1B3635] underline">Sign in</button></p>
+          <button type="button" className="mt-4 w-full rounded-lg bg-[#1B3635] py-3 text-sm font-bold text-white transition hover:bg-[#142928]">CREATE AN ACCOUNT</button>
         </div>
-      </div>
+      </aside>
     </div>
   );
 };

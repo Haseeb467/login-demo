@@ -5,7 +5,7 @@ export const floorplans: Item[] = [
     id: 'fp-1',
     name: 'Longwood 177',
     price: 228492,
-    image: 'https://images.unsplash.com/photo-1600607687989-ce400460c8c0?auto=format&fit=crop&q=80&w=400&h=300',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200&h=800',
     details: {
       beds: 3,
       baths: 2,
