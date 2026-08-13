@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
 interface WelcomeModalProps {
   onSelectRegion: (region: string) => void;
@@ -27,7 +27,19 @@ const regions = [
   { label: 'South East', points: '63,55 86,62 96,77 93,89 73,86 67,72 56,67', marker: ['77%', '81%'] },
 ] as const;
 
+const mapBounds = [
+  '144.102,-38.332,145.475,-37.400',
+  '144.330,-38.120,145.280,-37.530',
+  '144.550,-38.020,145.120,-37.650',
+] as const;
+
 const WelcomeModal: React.FC<WelcomeModalProps> = ({ onSelectRegion }) => {
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const mapUrl = useMemo(
+    () => `https://www.openstreetmap.org/export/embed.html?bbox=${mapBounds[zoomLevel]}&layer=mapnik`,
+    [zoomLevel],
+  );
+
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-gray-100 max-w-5xl w-full flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in duration-300 h-[min(560px,calc(100svh-48px))] min-h-[430px]">
@@ -53,7 +65,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onSelectRegion }) => {
             scrolling="no" 
             marginHeight={0} 
             marginWidth={0} 
-            src="https://www.openstreetmap.org/export/embed.html?bbox=144.102,-38.332,145.475,-37.400&amp;layer=mapnik" 
+            src={mapUrl}
             style={{ border: 0, filter: 'grayscale(100%) opacity(0.5) contrast(1.2)' }}
             title="Map of Victoria Regions"
             className="absolute inset-0 pointer-events-none"
@@ -61,6 +73,28 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onSelectRegion }) => {
           
           {/* Teal tint preserves the application's existing colour palette. */}
           <div className="absolute inset-0 bg-[#1B3635]/20 mix-blend-color pointer-events-none"></div>
+
+          <div className="absolute right-3 top-3 z-30 overflow-hidden rounded-lg border border-[#1B3635]/20 bg-white shadow-lg">
+            <button
+              type="button"
+              aria-label="Zoom in on map"
+              disabled={zoomLevel === mapBounds.length - 1}
+              onClick={() => setZoomLevel((level) => Math.min(level + 1, mapBounds.length - 1))}
+              className="grid h-10 w-10 place-items-center text-2xl font-semibold text-[#1B3635] transition hover:bg-[#1B3635] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              +
+            </button>
+            <div className="mx-2 border-t border-[#1B3635]/15" />
+            <button
+              type="button"
+              aria-label="Zoom out on map"
+              disabled={zoomLevel === 0}
+              onClick={() => setZoomLevel((level) => Math.max(level - 1, 0))}
+              className="grid h-10 w-10 place-items-center text-2xl font-semibold text-[#1B3635] transition hover:bg-[#1B3635] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              −
+            </button>
+          </div>
 
           {/* Clickable build-area boundaries. The fill is deliberately subtle so the map remains readable. */}
           <div className="absolute inset-0">
