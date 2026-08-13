@@ -3,6 +3,7 @@ import { AppState, Item } from '../../types';
 import { QuoteSummary } from '../QuoteSummary';
 import { floorplans } from '../../data';
 import { ArrowLeftRight, Bath, BedDouble, CarFront, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 interface Step2FloorplanProps {
   state: AppState;
@@ -40,13 +41,18 @@ const Detail = ({ icon: Icon, value }: { icon: typeof BedDouble; value: number |
 const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onNext, onBack }) => {
   const initialIndex = Math.max(0, floorplans.findIndex((plan) => plan.id === state.selections.floorplan?.id));
   const [activeIndex, setActiveIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState<-1 | 1>(1);
+  const prefersReducedMotion = useReducedMotion();
   const activePlan = floorplans[activeIndex];
   const previousPlan = floorplans[(activeIndex - 1 + floorplans.length) % floorplans.length];
   const nextPlan = floorplans[(activeIndex + 1) % floorplans.length];
   const isSelected = state.selections.floorplan?.id === activePlan.id;
 
   const selectPlan = () => updateState({ selections: { ...state.selections, floorplan: activePlan } });
-  const changePlan = (direction: -1 | 1) => setActiveIndex((index) => (index + direction + floorplans.length) % floorplans.length);
+  const changePlan = (nextDirection: -1 | 1) => {
+    setDirection(nextDirection);
+    setActiveIndex((index) => (index + nextDirection + floorplans.length) % floorplans.length);
+  };
 
   return (
     <div className="mx-auto grid w-full max-w-7xl gap-7 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_330px]">
@@ -68,32 +74,41 @@ const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onN
           <FloorplanPreview plan={previousPlan} position="previous" onClick={() => changePlan(-1)} />
           <button type="button" onClick={() => changePlan(-1)} aria-label="Previous floorplan" className="absolute left-0 z-20 grid h-11 w-11 place-items-center rounded-full bg-[#1B3635] text-white shadow-lg transition hover:scale-105 hover:bg-[#142928]"><ChevronLeft /></button>
 
-          <article className="relative z-10 grid w-full max-w-[610px] overflow-hidden rounded-2xl border-2 border-[#C5A267] bg-white shadow-[0_20px_45px_rgba(27,54,53,0.16)] md:grid-cols-[1.08fr_0.92fr]">
-            <div className="relative min-h-[300px] bg-[#f5f7f6] p-6">
-              <button type="button" aria-label={`Preview ${activePlan.name}`} className="absolute left-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-[#1B3635] text-white shadow-md transition hover:bg-[#142928]"><Search className="h-5 w-5" /></button>
-              <img src={activePlan.image} alt={activePlan.name} className="h-full w-full object-cover" />
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 p-2 text-[#1B3635] shadow-sm"><ArrowLeftRight className="h-5 w-5" /></div>
-            </div>
-
-            <div className="flex flex-col p-6 text-center">
-              <button type="button" onClick={selectPlan} className="rounded-md bg-[#1B3635] py-2.5 text-sm font-bold text-white transition hover:bg-[#142928]">{isSelected ? 'SELECTED' : 'SELECT THIS PLAN'}</button>
-              <h3 className="mt-7 text-2xl font-bold uppercase tracking-tight text-slate-900">{activePlan.name}</h3>
-              <button type="button" className="mx-auto mt-2 text-sm font-medium text-[#1B3635] underline underline-offset-4">View Floorplan</button>
-              <button type="button" className="mx-auto mt-3 rounded bg-[#C5A267] px-3 py-1.5 text-[11px] font-bold text-white">INCLUSIONS</button>
-
-              <div className="my-6 flex justify-center gap-7 border-y border-slate-200 py-5">
-                <Detail icon={BedDouble} value={activePlan.details?.beds} />
-                <Detail icon={Bath} value={activePlan.details?.baths} />
-                <Detail icon={CarFront} value={activePlan.details?.cars} />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.article
+              key={activePlan.id}
+              initial={prefersReducedMotion ? false : { opacity: 0, x: direction * 42, scale: 0.975 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={prefersReducedMotion ? undefined : { opacity: 0, x: direction * -42, scale: 0.975 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-10 grid w-full max-w-[610px] overflow-hidden rounded-2xl border-2 border-[#C5A267] bg-white shadow-[0_20px_45px_rgba(27,54,53,0.16)] md:grid-cols-[1.08fr_0.92fr]"
+            >
+              <div className="relative min-h-[300px] bg-[#f5f7f6] p-6">
+                <button type="button" aria-label={`Preview ${activePlan.name}`} className="absolute left-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-[#1B3635] text-white shadow-md transition hover:bg-[#142928]"><Search className="h-5 w-5" /></button>
+                <img src={activePlan.image} alt={activePlan.name} className="h-full w-full object-cover" />
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 p-2 text-[#1B3635] shadow-sm"><ArrowLeftRight className="h-5 w-5" /></div>
               </div>
-              <div className="space-y-1 text-right text-xs text-slate-500">
-                <p>Min Frontage: <span className="font-semibold text-[#1B3635]">{activePlan.details?.minFrontage}</span></p>
-                <p>Min Depth: <span className="font-semibold text-[#1B3635]">{activePlan.details?.minDepth}</span></p>
-                <p>Total Area: <span className="font-semibold text-[#1B3635]">{activePlan.details?.totalArea}</span></p>
+
+              <div className="flex flex-col p-6 text-center">
+                <button type="button" onClick={selectPlan} className="rounded-md bg-[#1B3635] py-2.5 text-sm font-bold text-white transition hover:bg-[#142928]">{isSelected ? 'SELECTED' : 'SELECT THIS PLAN'}</button>
+                <h3 className="mt-7 text-2xl font-bold uppercase tracking-tight text-slate-900">{activePlan.name}</h3>
+                <button type="button" className="mx-auto mt-2 text-sm font-medium text-[#1B3635] underline underline-offset-4">View Floorplan</button>
+                <button type="button" className="mx-auto mt-3 rounded bg-[#C5A267] px-3 py-1.5 text-[11px] font-bold text-white">INCLUSIONS</button>
+
+                <div className="my-6 flex justify-center gap-7 border-y border-slate-200 py-5">
+                  <Detail icon={BedDouble} value={activePlan.details?.beds} />
+                  <Detail icon={Bath} value={activePlan.details?.baths} />
+                  <Detail icon={CarFront} value={activePlan.details?.cars} />
+                </div>
+                <div className="space-y-1 text-right text-xs text-slate-500">
+                  <p>Min Frontage: <span className="font-semibold text-[#1B3635]">{activePlan.details?.minFrontage}</span></p>
+                  <p>Min Depth: <span className="font-semibold text-[#1B3635]">{activePlan.details?.minDepth}</span></p>
+                  <p>Total Area: <span className="font-semibold text-[#1B3635]">{activePlan.details?.totalArea}</span></p>
+                </div>
               </div>
-            </div>
-            <div className="col-span-full bg-[#1B3635] py-3 text-center text-xl font-bold text-white">{formatPrice(activePlan.price)}</div>
-          </article>
+              <div className="col-span-full bg-[#1B3635] py-3 text-center text-xl font-bold text-white">{formatPrice(activePlan.price)}</div>
+            </motion.article>
+          </AnimatePresence>
 
           <button type="button" onClick={() => changePlan(1)} aria-label="Next floorplan" className="absolute right-0 z-20 grid h-11 w-11 place-items-center rounded-full bg-[#1B3635] text-white shadow-lg transition hover:scale-105 hover:bg-[#142928]"><ChevronRight /></button>
           <FloorplanPreview plan={nextPlan} position="next" onClick={() => changePlan(1)} />
