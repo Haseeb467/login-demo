@@ -77,10 +77,10 @@ const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onN
           <AnimatePresence mode="wait" initial={false}>
             <motion.article
               key={activePlan.id}
-              initial={prefersReducedMotion ? false : { opacity: 0, x: direction * 42, scale: 0.975 }}
+              initial={prefersReducedMotion ? false : { opacity: 0.55, x: direction * 150, scale: 0.74 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={prefersReducedMotion ? undefined : { opacity: 0, x: direction * -42, scale: 0.975 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              exit={prefersReducedMotion ? undefined : { opacity: 0.55, x: direction * -150, scale: 0.74 }}
+              transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
               className="relative z-10 grid w-full max-w-[610px] overflow-hidden rounded-2xl border-2 border-[#C5A267] bg-white shadow-[0_20px_45px_rgba(27,54,53,0.16)] md:grid-cols-[1.08fr_0.92fr]"
             >
               <div className="relative min-h-[300px] bg-[#f5f7f6] p-6">
