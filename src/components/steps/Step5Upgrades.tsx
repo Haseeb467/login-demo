@@ -51,7 +51,7 @@ const Step5Upgrades: React.FC<Step5UpgradesProps> = ({ state, updateState, onNex
                <ul className="space-y-1 text-sm">
                  {navigation.map(([section, children]) => {
                    const available = categories.includes(section);
-                   const open = activeCategory === section || children.includes(activeCategory);
+                   const open = activeCategory === section || (children as readonly string[]).includes(activeCategory);
                    return (
                      <li key={section}>
                        <button onClick={() => available && setActiveCategory(section)} className={`w-full text-left px-2 py-1.5 rounded flex items-center justify-between transition ${open ? 'bg-[#f9e6d8] text-[#1B3635] font-semibold' : 'text-slate-700 hover:bg-white'} ${!available ? 'cursor-default' : ''}`}>
