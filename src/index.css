@@ -3,9 +3,11 @@
 /* DBN Homes colour scheme */
 :root { --dbn-primary: #017580; --dbn-deep: #06333a; --dbn-mist: #f1f4f4; --dbn-sand: #e6e1d5; }
 body { background: var(--dbn-mist); color: var(--dbn-deep); }
-[class*="bg-[#1B3635]"] { background-color: var(--dbn-deep) !important; }
-[class*="text-[#1B3635]"] { color: var(--dbn-deep) !important; }
-[class*="border-[#1B3635]"] { border-color: var(--dbn-deep) !important; }
-[class*="bg-[#C5A267]"] { background-color: var(--dbn-primary) !important; }
-[class*="text-[#C5A267]"] { color: var(--dbn-primary) !important; }
-[class*="border-[#C5A267]"] { border-color: var(--dbn-primary) !important; }
+.bg-\[\#1B3635\] { background-color: var(--dbn-deep) !important; }
+.text-\[\#1B3635\] { color: var(--dbn-deep) !important; }
+.border-\[\#1B3635\] { border-color: var(--dbn-deep) !important; }
+.bg-\[\#C5A267\] { background-color: var(--dbn-primary) !important; }
+.text-\[\#C5A267\] { color: var(--dbn-primary) !important; }
+.border-\[\#C5A267\] { border-color: var(--dbn-primary) !important; }
+.group:hover .group-hover\:bg-\[\#1B3635\] { background-color: var(--dbn-deep) !important; }
+.group:hover .group-hover\:text-white { color: white !important; }
