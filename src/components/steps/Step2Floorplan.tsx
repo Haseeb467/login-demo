@@ -49,6 +49,12 @@ const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onN
   const isSelected = state.selections.floorplan?.id === activePlan.id;
 
   const selectPlan = () => updateState({ selections: { ...state.selections, floorplan: activePlan } });
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      selectPlan();
+    }
+  };
   const changePlan = (nextDirection: -1 | 1) => {
     setDirection(nextDirection);
     setActiveIndex((index) => (index + nextDirection + floorplans.length) % floorplans.length);
@@ -77,23 +83,29 @@ const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onN
           <AnimatePresence mode="wait" initial={false}>
             <motion.article
               key={activePlan.id}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSelected}
+              aria-label={`Select ${activePlan.name} floorplan`}
+              onClick={selectPlan}
+              onKeyDown={handleCardKeyDown}
               initial={prefersReducedMotion ? false : { opacity: 0.55, x: direction * 150, scale: 0.74 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={prefersReducedMotion ? undefined : { opacity: 0.55, x: direction * -150, scale: 0.74 }}
               transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-              className="relative z-10 grid w-full max-w-[610px] overflow-hidden rounded-2xl border-2 border-[#C5A267] bg-white shadow-[0_20px_45px_rgba(27,54,53,0.16)] md:grid-cols-[1.08fr_0.92fr]"
+              className="relative z-10 grid w-full max-w-[610px] cursor-pointer overflow-hidden rounded-2xl border-2 border-[#C5A267] bg-white shadow-[0_20px_45px_rgba(27,54,53,0.16)] outline-none transition hover:border-[#1B3635] focus-visible:ring-4 focus-visible:ring-[#1B3635]/25 md:grid-cols-[1.08fr_0.92fr]"
             >
               <div className="relative min-h-[300px] bg-[#f5f7f6] p-6">
-                <button type="button" aria-label={`Preview ${activePlan.name}`} className="absolute left-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-[#1B3635] text-white shadow-md transition hover:bg-[#142928]"><Search className="h-5 w-5" /></button>
+                <button type="button" onClick={(event) => event.stopPropagation()} aria-label={`Preview ${activePlan.name}`} className="absolute left-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-[#1B3635] text-white shadow-md transition hover:bg-[#142928]"><Search className="h-5 w-5" /></button>
                 <img src={activePlan.image} alt={activePlan.name} className="h-full w-full object-cover" />
                 <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 p-2 text-[#1B3635] shadow-sm"><ArrowLeftRight className="h-5 w-5" /></div>
               </div>
 
               <div className="flex flex-col p-6 text-center">
-                <button type="button" onClick={selectPlan} className="rounded-md bg-[#1B3635] py-2.5 text-sm font-bold text-white transition hover:bg-[#142928]">{isSelected ? 'SELECTED' : 'SELECT THIS PLAN'}</button>
+                <button type="button" onClick={(event) => { event.stopPropagation(); selectPlan(); }} className="rounded-md bg-[#1B3635] py-2.5 text-sm font-bold text-white transition hover:bg-[#142928]">{isSelected ? 'SELECTED' : 'SELECT THIS PLAN'}</button>
                 <h3 className="mt-7 text-2xl font-bold uppercase tracking-tight text-slate-900">{activePlan.name}</h3>
-                <button type="button" className="mx-auto mt-2 text-sm font-medium text-[#1B3635] underline underline-offset-4">View Floorplan</button>
-                <button type="button" className="mx-auto mt-3 rounded bg-[#C5A267] px-3 py-1.5 text-[11px] font-bold text-white">INCLUSIONS</button>
+                <button type="button" onClick={(event) => event.stopPropagation()} className="mx-auto mt-2 text-sm font-medium text-[#1B3635] underline underline-offset-4">View Floorplan</button>
+                <button type="button" onClick={(event) => event.stopPropagation()} className="mx-auto mt-3 rounded bg-[#C5A267] px-3 py-1.5 text-[11px] font-bold text-white">INCLUSIONS</button>
 
                 <div className="my-6 flex justify-center gap-7 border-y border-slate-200 py-5">
                   <Detail icon={BedDouble} value={activePlan.details?.beds} />

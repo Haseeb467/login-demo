@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppState } from '../../types';
-import { FileDown, Share } from 'lucide-react';
+import { FileDown } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
 interface Step6FinalSummaryProps {
@@ -28,19 +28,46 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
 
   const downloadPdf = () => {
     const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character] || character));
-    const rows = [
+    const rows: Array<[string, string, number]> = [
       ['Floorplan', selections.floorplan?.name || 'Not selected', selections.floorplan?.price || 0],
       ['Facade', selections.facade?.name || 'Not selected', selections.facade?.price || 0],
       ['External colours', selections.externalColour?.name || 'Not selected', selections.externalColour?.price || 0],
       ['Internal colours', selections.internalColour?.name || 'Not selected', selections.internalColour?.price || 0],
-      ...(Object.entries(selections.upgrades) as [string, { name: string; price: number }][]).map(([category, item]) => [category, item.name, item.price] as const),
+      ...(Object.entries(selections.upgrades) as [string, { name: string; price: number }][]).map(([category, item]): [string, string, number] => [category, item.name, item.price]),
     ];
+    const quoteHtml = `<!doctype html><html><head><title>DBN Homes Quote</title><style>body{font-family:Arial,sans-serif;color:#06333a;margin:48px}h1{font-size:30px}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{padding:13px 0;border-bottom:1px solid #d8e0df;text-align:left}th:last-child,td:last-child{text-align:right}.total{margin-top:28px;text-align:right;font-size:24px;font-weight:bold}.note{margin-top:24px;color:#53666a;font-size:12px}@media print{body{margin:24px}}</style></head><body><h1>DBN Homes - Quote Summary</h1><p>Build region: ${escapeHtml(state.region || 'Not specified')}</p><table><thead><tr><th>Category</th><th>Selection</th><th>Price</th></tr></thead><tbody>${rows.map(([category, name, value]) => `<tr><td>${escapeHtml(category)}</td><td>${escapeHtml(name)}</td><td>${value === 0 ? 'Included' : formatPrice(value)}</td></tr>`).join('')}</tbody></table><p class="total">TOTAL: ${formatPrice(total)}</p><p class="note">This is an indicative quote only.</p></body></html>`;
+    const frame = document.createElement('iframe');
+    frame.style.position = 'fixed';
+    frame.style.right = '0';
+    frame.style.bottom = '0';
+    frame.style.width = '0';
+    frame.style.height = '0';
+    frame.style.border = '0';
+    document.body.appendChild(frame);
+
+    const frameWindow = frame.contentWindow;
+    const frameDocument = frame.contentDocument || frameWindow?.document;
+    if (!frameWindow || !frameDocument) {
+      frame.remove();
+      return;
+    }
+
+    frameDocument.open();
+    frameDocument.write(quoteHtml);
+    frameDocument.close();
+    frameWindow.focus();
+    setTimeout(() => {
+      frameWindow.print();
+      setTimeout(() => frame.remove(), 1000);
+    }, 150);
+    /*
     const printWindow = window.open('', '_blank', 'noopener,noreferrer');
     if (!printWindow) return;
     printWindow.document.write(`<!doctype html><html><head><title>DBN Homes Quote</title><style>body{font-family:Arial,sans-serif;color:#06333a;margin:48px}h1{font-size:30px}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{padding:13px 0;border-bottom:1px solid #d8e0df;text-align:left}th:last-child,td:last-child{text-align:right}.total{margin-top:28px;text-align:right;font-size:24px;font-weight:bold}@media print{body{margin:24px}}</style></head><body><h1>DBN Homes — Quote Summary</h1><p>Build region: ${escapeHtml(state.region || 'Not specified')}</p><table><thead><tr><th>Category</th><th>Selection</th><th>Price</th></tr></thead><tbody>${rows.map(([category, name, value]) => `<tr><td>${escapeHtml(category)}</td><td>${escapeHtml(name)}</td><td>${value === 0 ? 'Included' : formatPrice(value)}</td></tr>`).join('')}</tbody></table><p class="total">TOTAL: ${formatPrice(total)}</p><p>This is an indicative quote only.</p></body></html>`);
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
+    */
   };
 
   return (
@@ -169,9 +196,6 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
                     GET IN TOUCH
                   </button>
                   <button type="button" onClick={downloadPdf} className="inline-flex items-center gap-2 border border-[#1B3635] bg-white px-4 py-3 text-sm font-bold text-[#1B3635] transition hover:bg-[#1B3635] hover:text-white" aria-label="Download quote as PDF"><FileDown className="h-5 w-5" /> PDF</button>
-                  <button className="p-3 text-[#1B3635] border border-[#1B3635] rounded hover:bg-gray-100 transition-colors">
-                    <Share className="w-5 h-5" />
-                  </button>
                 </div>
              </div>
            </div>

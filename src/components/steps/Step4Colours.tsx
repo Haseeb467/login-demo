@@ -43,7 +43,7 @@ const Step4Colours: React.FC<Step4ColoursProps> = ({ state, updateState, onNext,
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 p-4">
       <div className="flex-1">
-        <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-6 mb-6 pb-24 relative min-h-[600px]">
+        <div className="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-6 mb-6 min-h-[600px]">
           <h2 className="text-2xl font-bold text-gray-900 uppercase mb-6">
             {phase === 'external' ? 'EXTERNAL COLOURS SCHEMES' : 'INTERNAL COLOURS SCHEMES'}
           </h2>
@@ -83,27 +83,28 @@ const Step4Colours: React.FC<Step4ColoursProps> = ({ state, updateState, onNext,
              </p>
           </div>
 
-          <div className="absolute bottom-6 left-6 text-xs text-gray-500">
+          <div className="mt-6 text-xs text-gray-500">
             Press <span className="inline-block mx-1 w-4 h-4 bg-[#1B3635] text-white rounded-full text-center leading-4 text-[10px]">i</span> for more information
           </div>
 
-          {/* Bottom Actions */}
-          <div className="absolute bottom-6 inset-x-0 flex items-center justify-center">
+          <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 border-t border-slate-100 pt-6 sm:flex-row">
              <button 
+               type="button"
                onClick={() => {
                  if (phase === 'internal') setPhase('external');
                  else onBack();
                }} 
-               className="absolute left-1/2 -ml-24 text-[#1B3635] hover:underline text-sm uppercase"
+               className="text-sm font-semibold text-[#1B3635] underline underline-offset-4"
              >
-               &lt; GO BACK
+               &larr; GO BACK
              </button>
              <button 
+               type="button"
                onClick={handleNextAction}
                disabled={!currentSelection}
-               className={`bg-[#1B3635] hover:bg-[#142928] text-white rounded-xl px-6 py-4 font-bold shadow-lg shadow-teal-900/20 flex items-center gap-2 transition-colors z-10 ${!currentSelection ? 'opacity-50 cursor-not-allowed' : ''}`}
+               className={`inline-flex items-center gap-2 rounded-lg bg-[#1B3635] px-6 py-3 font-bold text-white shadow-lg transition hover:bg-[#142928] disabled:cursor-not-allowed disabled:opacity-45 ${!currentSelection ? 'opacity-50 cursor-not-allowed' : ''}`}
              >
-               NEXT STEP <ChevronRight className="w-5 h-5 text-[#1B3635]" />
+               NEXT STEP <ChevronRight className="h-5 w-5" />
              </button>
           </div>
         </div>

@@ -9,12 +9,11 @@ interface Step1BuildQuoteProps {
 }
 
 const Step1BuildQuote: React.FC<Step1BuildQuoteProps> = ({ state, updateState, onNext }) => {
-  const { hasLand, landDetails, authMode, user } = state;
+  const { hasLand, landDetails } = state;
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 p-4">
-      {/* Left Panel - Land Details */}
-      <div className="flex-1 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-6 lg:p-10 relative pb-24">
+    <div className="w-full max-w-6xl mx-auto p-4">
+      <div className="w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-6 lg:p-10 relative pb-24">
         <h2 className="text-xl font-bold text-gray-800 uppercase mb-4">DO YOU HAVE LAND?</h2>
         <div className="flex gap-3 mb-8">
           <button 
@@ -128,73 +127,6 @@ const Step1BuildQuote: React.FC<Step1BuildQuoteProps> = ({ state, updateState, o
         </div>
       </div>
 
-      {/* Right Panel - Login/Register */}
-      <div className="w-full lg:w-[400px] flex flex-col">
-        <div className="flex w-full">
-          <button 
-            onClick={() => updateState({ authMode: 'register' })}
-            className={`flex-1 py-4 font-bold text-sm tracking-wide transition-colors ${authMode === 'register' ? 'bg-[#1B3635] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-          >
-            CREATE ACCOUNT
-          </button>
-          <button 
-            onClick={() => updateState({ authMode: 'login' })}
-            className={`flex-1 py-4 font-bold text-sm tracking-wide transition-colors ${authMode === 'login' ? 'bg-[#1B3635] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-          >
-            SIGN IN
-          </button>
-        </div>
-        
-        <div className="bg-white rounded-b-lg shadow-sm p-6 flex-1 border-t-0">
-          {authMode === 'register' ? (
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">FIRST NAME</label>
-                  <input type="text" placeholder="First Name" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SURNAME</label>
-                  <input type="text" placeholder="Surname" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">PHONE NUMBER</label>
-                <input type="tel" placeholder="Phone Number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">EMAIL</label>
-                <input type="email" placeholder="Email" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">PASSWORD</label>
-                <input type="password" placeholder="Password" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-              </div>
-              <div className="pt-4 flex justify-center">
-                <button className="bg-[#1B3635] hover:bg-[#142928] text-white rounded-xl px-8 py-4 font-bold shadow-lg shadow-teal-900/20 transition-colors w-full md:w-auto">
-                  CREATE ACCOUNT
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">EMAIL</label>
-                <input type="email" placeholder="Email" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">PASSWORD</label>
-                <input type="password" placeholder="Password" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-[#1B3635] focus:border-transparent outline-none transition-all text-gray-900" />
-              </div>
-              <div className="pt-4 flex justify-center">
-                <button className="bg-[#1B3635] hover:bg-[#142928] text-white rounded-xl px-8 py-4 font-bold shadow-lg shadow-teal-900/20 transition-colors w-full md:w-auto">
-                  SIGN IN
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 };
