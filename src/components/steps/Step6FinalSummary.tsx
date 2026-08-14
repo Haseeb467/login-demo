@@ -37,7 +37,7 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
     ];
     const printWindow = window.open('', '_blank', 'noopener,noreferrer');
     if (!printWindow) return;
-    printWindow.document.write(`<!doctype html><html><head><title>Mimosa Homes Quote</title><style>body{font-family:Arial,sans-serif;color:#1B3635;margin:48px}h1{font-size:30px}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{padding:13px 0;border-bottom:1px solid #d8e0df;text-align:left}th:last-child,td:last-child{text-align:right}.total{margin-top:28px;text-align:right;font-size:24px;font-weight:bold}@media print{body{margin:24px}}</style></head><body><h1>Mimosa Homes — Quote Summary</h1><p>Build region: ${escapeHtml(state.region || 'Not specified')}</p><table><thead><tr><th>Category</th><th>Selection</th><th>Price</th></tr></thead><tbody>${rows.map(([category, name, value]) => `<tr><td>${escapeHtml(category)}</td><td>${escapeHtml(name)}</td><td>${value === 0 ? 'Included' : formatPrice(value)}</td></tr>`).join('')}</tbody></table><p class="total">TOTAL: ${formatPrice(total)}</p><p>This is an indicative quote only.</p></body></html>`);
+    printWindow.document.write(`<!doctype html><html><head><title>DBN Homes Quote</title><style>body{font-family:Arial,sans-serif;color:#06333a;margin:48px}h1{font-size:30px}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{padding:13px 0;border-bottom:1px solid #d8e0df;text-align:left}th:last-child,td:last-child{text-align:right}.total{margin-top:28px;text-align:right;font-size:24px;font-weight:bold}@media print{body{margin:24px}}</style></head><body><h1>DBN Homes — Quote Summary</h1><p>Build region: ${escapeHtml(state.region || 'Not specified')}</p><table><thead><tr><th>Category</th><th>Selection</th><th>Price</th></tr></thead><tbody>${rows.map(([category, name, value]) => `<tr><td>${escapeHtml(category)}</td><td>${escapeHtml(name)}</td><td>${value === 0 ? 'Included' : formatPrice(value)}</td></tr>`).join('')}</tbody></table><p class="total">TOTAL: ${formatPrice(total)}</p><p>This is an indicative quote only.</p></body></html>`);
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
@@ -157,7 +157,7 @@ const Step6FinalSummary: React.FC<Step6FinalSummaryProps> = ({ state }) => {
              </div>
              
              <p className="text-xs text-gray-400 mt-2">
-               The smaller facade is indicative only and is there to represent the external colours chosen. Refer to your official Mimosa Homes preliminary agreement for full and accurate pricing, promotions and terms and conditions. This is not an official quote.
+               The smaller facade is indicative only and is there to represent the external colours chosen. Refer to your official DBN Homes preliminary agreement for full and accurate pricing, promotions and terms and conditions. This is not an official quote.
              </p>
 
              <div className="mt-6 bg-[#f5f7f6] border border-[#1B3635]/20 rounded-xl p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shadow-sm">

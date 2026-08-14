@@ -120,13 +120,7 @@ const Step2Floorplan: React.FC<Step2FloorplanProps> = ({ state, updateState, onN
         </div>
       </section>
 
-      <aside className="space-y-4">
-        <QuoteSummary selections={state.selections} />
-        <div className="rounded-2xl border border-slate-100 bg-white p-5 text-right shadow-sm">
-          <p className="text-xs text-slate-500">Already have an account? <button type="button" className="font-semibold text-[#1B3635] underline">Sign in</button></p>
-          <button type="button" className="mt-4 w-full rounded-lg bg-[#1B3635] py-3 text-sm font-bold text-white transition hover:bg-[#142928]">CREATE AN ACCOUNT</button>
-        </div>
-      </aside>
+      <aside><QuoteSummary selections={state.selections} /></aside>
     </div>
   );
 };

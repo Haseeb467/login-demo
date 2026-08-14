@@ -109,18 +109,7 @@ const Step4Colours: React.FC<Step4ColoursProps> = ({ state, updateState, onNext,
         </div>
       </div>
       
-      <div className="w-full lg:w-[400px]">
-        <QuoteSummary selections={state.selections} />
-        <div className="mt-4 flex flex-col items-end gap-2 text-right">
-          <p className="text-xs text-gray-500">Already have an account? <a href="#" className="text-gray-800 underline">Sign In</a></p>
-          <button className="w-full bg-[#1B3635] hover:bg-[#142928] text-white py-4 rounded-xl font-bold shadow-lg shadow-teal-900/20 uppercase transition-colors">
-            CREATE AN ACCOUNT
-          </button>
-          <button className="bg-[#1B3635] hover:bg-[#142928] text-white text-xs px-4 py-2 rounded uppercase font-bold mt-2">
-            RESTART QUOTE
-          </button>
-        </div>
-      </div>
+      <div className="w-full lg:w-[400px]"><QuoteSummary selections={state.selections} /></div>
     </div>
   );
 };

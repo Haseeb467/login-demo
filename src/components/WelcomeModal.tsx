@@ -48,7 +48,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onSelectRegion }) => {
         <div className="w-full md:w-[45%] px-8 py-7 md:px-11 md:py-9 flex flex-col items-center justify-center text-center bg-white z-20 shadow-xl">
           <h1 className="text-4xl md:text-5xl font-light text-[#1B3635] mb-4 tracking-wide">WELCOME</h1>
           <p className="text-gray-600 leading-relaxed mb-6 text-base md:text-lg">
-            Start building your dream home with Mimosa Homes today. Explore our V-Collection and customize your house to suit your needs. Create a personalized quote and let us help you bring your dream home to life.
+            Start building your dream home with DBN Homes today. Explore our home designs and customize your house to suit your needs. Create a personalized quote and let us help you bring your dream home to life.
           </p>
           <p className="text-[#1B3635] font-semibold text-base md:text-lg">
             Begin by choosing your preferred build region
